@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-ink-950: #070b14;
+  --color-ink-900: #0b1220;
+  --color-ink-800: #121b2e;
+  --color-ink-700: #1c2740;
+  --color-ink-600: #2a3756;
+  --color-accent: #22d3ee; /* cyan — selection/hover */
+  --color-led: #4ade80; /* LD2 green */
+  --color-st: #ffd200; /* ST yellow accent */
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink-950);
+  color: #e2e8f0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* thin scrollbars for code / serial panes */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-ink-600) transparent;
+}
