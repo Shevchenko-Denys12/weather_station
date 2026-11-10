@@ -13,7 +13,8 @@ const PartContext = createContext({ hovered: false, selected: false })
 
 /**
  * Wraps any group of meshes and makes it a selectable board part.
- * Hover → highlight + floating label; click → select in global store.
+ * Hover → highlight + floating label; click → select in global store; double click → fly the camera to the part.
+ * A part with `onActivate` is an action button (B1, B2, SW1): its double click does not move the camera.
  */
 export function Interactive({ id, children, onActivate, labelOffset = [0, 0.55, 0], ...groupProps }) {
   const hovered = useBoardStore((s) => s.hoveredId === id)
@@ -41,7 +42,8 @@ export function Interactive({ id, children, onActivate, labelOffset = [0, 0.55, 
       }}
       onDoubleClick={(e) => {
         e.stopPropagation()
-        focusOn(worldPoint(e), 3)
+        // action buttons (onActivate) are pressed in quick succession: a double click must not zoom the camera
+        if (!onActivate) focusOn(worldPoint(e), 3)
       }}
     >
       <PartContext.Provider value={{ hovered, selected }}>{children}</PartContext.Provider>

@@ -3,10 +3,11 @@ import { useResizable } from '../hooks/useResizable'
 import { resetMcu, runFirmware, stopFirmware } from '../simulator/runtime'
 import { SIGNAL_MCU_PIN, SIGNAL_PIN } from './circuit/LedCircuit'
 import CodeViewer from './sidebar/CodeViewer'
+import EnvironmentPanel from './sidebar/EnvironmentPanel'
 import SerialMonitor from './sidebar/SerialMonitor'
 
 /**
- * Right-hand panel: firmware viewer, run controls and serial output.
+ * Right-hand panel: firmware viewer, run controls, ambient-environment sliders and serial output.
  * The code / serial split is draggable; `onCollapse` hides the whole panel.
  */
 export default function Sidebar({ onCollapse }) {
@@ -73,6 +74,8 @@ export default function Sidebar({ onCollapse }) {
           {SIGNAL_PIN}·{SIGNAL_MCU_PIN}
         </div>
       </div>
+
+      <EnvironmentPanel />
 
       {/* drag to trade code-viewer height for serial-monitor height */}
       <div

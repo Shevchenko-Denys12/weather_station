@@ -6,6 +6,7 @@ import { MODULES } from '../../data/modules'
 import { pinsOf } from '../../data/pinout'
 import { Interactive, PartMaterial } from '../board/Interactive'
 import { pinEvents, usePinColors } from '../board/pins'
+import { pressSw1 } from '../../simulator/runtime'
 import { ModuleFrame } from './shared'
 
 /**
@@ -13,7 +14,7 @@ import { ModuleFrame } from './shared'
  * Body 12 × 12 × 3.5 mm + steel cover, Ø11.5 cap, 4 legs on a 12.5 × 5.0 mm grid.
  * Legs 1–2 and 3–4 are always connected; pressing joins the two pairs.
  * Straddles the breadboard channel (d/g, rows 28 & 30); pin 1 → D2 (PA10), pin 4 → GND.
- * Clicking the cap plays the press (the MCU side is not emulated yet).
+ * Clicking the cap plays the press and pulses PA10 low, so the firmware switches the OLED screen.
  */
 const M = MODULES.SW1
 const LEG_DOWN = 0.35
@@ -32,6 +33,7 @@ export default function TactSwitch12({ capColor = '#dc2626' }) {
   })
 
   const press = () => {
+    pressSw1()
     setPressed(true)
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setPressed(false), 160)

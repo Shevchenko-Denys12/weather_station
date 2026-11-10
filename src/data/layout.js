@@ -12,7 +12,7 @@
 export const PITCH = 0.254 // 2.54 mm
 export const BOARD_W = 7.0
 export const BOARD_L = 8.25
-export const BOARD_T = 0.16
+export const BOARD_T = 0.12
 export const BOARD_TOP = BOARD_T / 2 // top surface of the PCB (PCB centered at y=0)
 export const BOARD_BOTTOM = -BOARD_T / 2
 export const GROUND_Y = -1.25 // table surface

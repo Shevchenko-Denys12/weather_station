@@ -18,7 +18,7 @@ export function runFirmware() {
   s.setStatus('running')
 
   const HAL = createHAL(signal)
-  const at = (snippet) => useBoardStore.getState().setActiveLine(lineOf(snippet))
+  const at = (snippet, nth) => useBoardStore.getState().setActiveLine(lineOf(snippet, nth))
 
   running = main({ HAL, at, signal })
     .catch((err) => {
@@ -57,4 +57,13 @@ export function pressUserButton(ms = 140) {
   const { writePin } = useBoardStore.getState()
   writePin('PC13', 0)
   setTimeout(() => useBoardStore.getState().writePin('PC13', 1), ms)
+}
+
+/** SW1 click (D2 / PA10, pull-up): short active-low pulse; only meaningful while the firmware runs. */
+export function pressSw1(ms = 120) {
+  if (useBoardStore.getState().status !== 'running') return
+  useBoardStore.getState().writePin('PA10', 0)
+  setTimeout(() => {
+    if (useBoardStore.getState().status === 'running') useBoardStore.getState().writePin('PA10', 1)
+  }, ms)
 }

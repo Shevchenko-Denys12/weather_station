@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from 'react'
+import { memo } from 'react'
 import { useBoardStore } from '../../store/useBoardStore'
 import { FILE_NAME, SOURCE_LINES } from '../../simulator/firmware'
 
@@ -8,16 +8,8 @@ import { FILE_NAME, SOURCE_LINES } from '../../simulator/firmware'
  */
 export default function CodeViewer() {
   const activeLine = useBoardStore((s) => s.activeLine)
-  const running = useBoardStore((s) => s.status === 'running')
-  const scroller = useRef(null)
 
-  // keep the active line in view while the simulation runs
-  useEffect(() => {
-    if (!running || !activeLine || !scroller.current) return
-    const el = scroller.current.querySelector(`[data-line="${activeLine}"]`)
-    el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-  }, [activeLine, running])
-
+  // The active line is only highlighted: the viewer never scrolls on its own, so the user can read freely.
   return (
     <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-ink-700 bg-ink-950">
       <header className="flex items-center gap-2 border-b border-ink-700 px-3 py-2 font-mono text-[11px] text-slate-400">
@@ -25,7 +17,7 @@ export default function CodeViewer() {
         {FILE_NAME}
         <span className="ml-auto text-slate-600">C · HAL</span>
       </header>
-      <div ref={scroller} className="scroll-thin min-h-0 flex-1 overflow-auto py-2 font-mono text-[12px] leading-[1.6]">
+      <div className="scroll-thin min-h-0 flex-1 overflow-auto py-2 font-mono text-[12px] leading-[1.6]">
         {SOURCE_LINES.map((text, i) => (
           <CodeLine key={i} n={i + 1} text={text} active={i + 1 === activeLine} />
         ))}
@@ -50,7 +42,7 @@ const CodeLine = memo(function CodeLine({ n, text, active }) {
 
 // ── minimal C highlighter ────────────────────────────────────────────
 const TOKEN =
-  /(\/\/.*$|\/\*.*?\*\/|\/\*.*$|^\s*\*.*$)|("(?:\\.|[^"\\])*")|(#\s*\w+)|\b(int|char|void|static|volatile|const|while|if|else|return|sizeof|uint8_t|uint16_t|uint32_t|GPIO_PinState|UART_HandleTypeDef|GPIO_InitTypeDef)\b|\b(HAL_\w+|MX_\w+|__HAL_\w+|SystemClock_Config|snprintf|strlen)\b|\b([A-Z][A-Z0-9_]{2,})\b|\b(\d+)\b/g
+  /(\/\/.*$|\/\*.*?\*\/|\/\*.*$|^\s*\*.*$)|("(?:\\.|[^"\\])*")|(#\s*\w+)|\b(int|char|void|static|volatile|const|while|if|else|return|sizeof|uint8_t|uint16_t|uint32_t|int8_t|int16_t|float|switch|case|break|default|typedef|struct|Record|DS3231_Time|White|Black|Font_6x8|GPIO_PinState|UART_HandleTypeDef|I2C_HandleTypeDef|GPIO_InitTypeDef|BMP280_Data|DHT11_Data)\b|\b(HAL_\w+|MX_\w+|__HAL_\w+|SystemClock_Config|BMP280_Read|DHT11_Read|DS3231_\w+|ssd1306_\w+|oled_print|draw_\w+|history_\w+|alarm_arm|crc8|lroundf|memcpy|memmove|snprintf|strlen)\b|\b([A-Z][A-Z0-9_]{2,})\b|\b(\d+)\b/g
 
 const CLASSES = [
   'text-slate-500 italic', // comment

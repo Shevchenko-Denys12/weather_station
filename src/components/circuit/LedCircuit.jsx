@@ -8,7 +8,7 @@ import { AxialResistor, ThtLed } from './parts'
  * LED1 (red, 5 mm) and its 220 Ω resistor. They used to blink on D7 (PA8)
  * from the breadboard; the weather-station wiring (C/README.md) frees that
  * space, so both parts now sit in a piece of anti-static foam next to the
- * breadboard, unconnected. The demo firmware still toggles PA8.
+ * breadboard, unconnected. The firmware no longer drives PA8.
  *
  * To put LED1 back: give it holes on the breadboard and add its two wires to
  * data/wiring.js (D7 → resistor → anode, cathode → GND).

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { ENV_DEFAULTS } from '../simulator/environment'
 
 const SERIAL_LIMIT = 300
 const INITIAL_GPIO = { PA5: 0, PA8: 0, PC13: 1 }
@@ -10,6 +11,8 @@ const INITIAL_GPIO = { PA5: 0, PA8: 0, PC13: 1 }
  * - gpio:        logical pin levels driven by the simulator (HAL)
  * - simulation:  run status, currently executing source line
  * - serial:      lines printed through USART2 (ST-LINK virtual COM port)
+ * - env:         ambient conditions the simulated sensors measure (Environment panel)
+ * - oled:        pixel frame shown on the SSD1306 (null = display off / not initialised)
  */
 export const useBoardStore = create((set, get) => ({
   // ── interaction ─────────────────────────────────────────────
@@ -59,6 +62,19 @@ export const useBoardStore = create((set, get) => ({
     }),
   clearSerial: () => set({ serial: [] }),
 
+  // ── ambient environment (kept across Stop / Reset: it is the user's input, not MCU state) ──
+  env: { ...ENV_DEFAULTS },
+  setEnv: (patch) => set((s) => ({ env: { ...s.env, ...patch } })),
+  resetEnv: () => set({ env: { ...ENV_DEFAULTS } }),
+
+  // DS3231 speed relative to real time (so the 15-minute logging interval can be watched); see devices.js
+  rtcSpeed: 60,
+  setRtcSpeed: (rtcSpeed) => set({ rtcSpeed }),
+
+  // ── OLED (SSD1306 128×64) ───────────────────────────────────
+  oled: null, // Uint8Array(128 * 64) of 0 / 1 while the display is on
+  setOled: (oled) => set({ oled }),
+
   // full reset (Reset button B2 / Stop)
-  resetBoard: () => set({ gpio: { ...INITIAL_GPIO }, activeLine: null }),
+  resetBoard: () => set({ gpio: { ...INITIAL_GPIO }, activeLine: null, oled: null }),
 }))
